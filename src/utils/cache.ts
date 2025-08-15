@@ -1,12 +1,14 @@
-function createCache() {
-  const cache = new Map();
+import { Cache, CacheItem } from '../types';
+
+function createCache(): Cache {
+  const cache = new Map<string, CacheItem<any>>();
   const maxAge = 5 * 60 * 1000;
 
   return {
-    set(key, data) {
+    set<T>(key: string, data: T): void {
       cache.set(key, { data, timestamp: Date.now() });
     },
-    get(key) {
+    get<T>(key: string): T | null {
       const item = cache.get(key);
       if (!item) return null;
       if (Date.now() - item.timestamp > maxAge) {
@@ -15,7 +17,7 @@ function createCache() {
       }
       return item.data;
     },
-    clear() {
+    clear(): void {
       cache.clear();
     },
   };

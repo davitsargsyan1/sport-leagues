@@ -1,12 +1,13 @@
 import cache from './cache';
+import { League, LeaguesApiResponse, SeasonsApiResponse } from '../types';
 
 const LEAGUES_API = 'https://www.thesportsdb.com/api/v1/json/3/all_leagues.php';
 const BADGE_API = 'https://www.thesportsdb.com/api/v1/json/3/search_all_seasons.php?badge=1&id=';
 
-export const fetchAllLeagues = async () => {
+export const fetchAllLeagues = async (): Promise<League[]> => {
   const cacheKey = 'all_leagues';
 
-  const cachedData = cache.get(cacheKey);
+  const cachedData = cache.get<League[]>(cacheKey);
   if (cachedData) {
     return cachedData;
   }
@@ -17,7 +18,7 @@ export const fetchAllLeagues = async () => {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    const data = await response.json();
+    const data: LeaguesApiResponse = await response.json();
     const leagues = data.leagues || [];
 
     const filteredLeagues = leagues.filter(league => league.strLeague !== '_No League');
@@ -33,10 +34,10 @@ export const fetchAllLeagues = async () => {
   }
 };
 
-export const fetchSeasonBadge = async leagueId => {
+export const fetchSeasonBadge = async (leagueId: string): Promise<string> => {
   const cacheKey = `badge_${leagueId}`;
 
-  const cachedData = cache.get(cacheKey);
+  const cachedData = cache.get<string>(cacheKey);
   if (cachedData) {
     return cachedData;
   }
@@ -47,11 +48,11 @@ export const fetchSeasonBadge = async leagueId => {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    const data = await response.json();
+    const data: SeasonsApiResponse = await response.json();
     const seasons = data.seasons || [];
 
-    const badgeUrl =
-      seasons.length > 0 ? seasons.find(season => season.strBadge)?.strBadge : '/404-not-found.png';
+    const badgeUrl: string =
+      seasons.length > 0 ? seasons.find(season => season.strBadge)?.strBadge || '/404-not-found.png' : '/404-not-found.png';
 
     cache.set(cacheKey, badgeUrl);
 

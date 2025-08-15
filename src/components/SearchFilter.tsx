@@ -1,6 +1,13 @@
-import { memo } from 'react';
+import React, { memo } from 'react';
+import { SearchFilterProps } from '../types';
 
-const SearchFilter = ({ searchTerm, onSearchTermChange, selectedSport, onSportChange, sports }) => (
+const SearchFilter: React.FC<SearchFilterProps> = ({
+  searchTerm,
+  onSearchTermChange,
+  selectedSport,
+  onSportChange,
+  sports,
+}) => (
   <div className="filters">
     <input
       id="search-input"

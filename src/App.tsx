@@ -1,17 +1,18 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import Masonry from 'react-masonry-css';
 
 import { useDebounce } from './hooks';
 import { fetchAllLeagues } from './utils/api';
 import LeagueCard from './components/LeagueCard';
 import SearchFilter from './components/SearchFilter';
+import { League } from './types';
 
-function App() {
-  const [error, setError] = useState(null);
-  const [leagues, setLeagues] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedSport, setSelectedSport] = useState('');
+function App(): React.ReactElement {
+  const [error, setError] = useState<string | null>(null);
+  const [leagues, setLeagues] = useState<League[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [selectedSport, setSelectedSport] = useState<string>('');
 
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
@@ -32,20 +33,20 @@ function App() {
     loadLeagues();
   }, []);
 
-  const handleSearchTermChange = useCallback(value => {
+  const handleSearchTermChange = useCallback((value: string): void => {
     setSearchTerm(value);
   }, []);
 
-  const handleSportChange = useCallback(value => {
+  const handleSportChange = useCallback((value: string): void => {
     setSelectedSport(value);
   }, []);
 
-  const sports = useMemo(() => {
-    const uniqueSports = [...new Set(leagues.map(league => league.strSport))];
+  const sports = useMemo((): string[] => {
+    const uniqueSports = Array.from(new Set(leagues.map(league => league.strSport)));
     return uniqueSports.sort();
   }, [leagues]);
 
-  const filteredLeagues = useMemo(() => {
+  const filteredLeagues = useMemo((): League[] => {
     return leagues.filter(league => {
       const matchesSearch =
         league.strLeague.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||

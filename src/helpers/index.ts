@@ -1,5 +1,7 @@
-export const getSportStyle = sport => {
-  const sportStyles = {
+import { SportStyle, SportStyleMap } from '../types';
+
+export const getSportStyle = (sport: string): SportStyle | undefined => {
+  const sportStyles: SportStyleMap = {
     Soccer: { color: '#1e8449', icon: '⚽' },
     Basketball: { color: '#d35400', icon: '🏀' },
     Motorsport: { color: '#922b21', icon: '🏎️' },

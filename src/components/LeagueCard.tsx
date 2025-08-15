@@ -1,14 +1,14 @@
-import { useState, useCallback, useMemo, memo } from 'react';
-
+import React, { useState, useCallback, useMemo, memo } from 'react';
+import { LeagueCardProps } from '../types';
 import { getSportStyle } from '../helpers';
 import { fetchSeasonBadge } from '../utils/api';
 
-const LeagueCard = ({ league }) => {
-  const [badgeUrl, setBadgeUrl] = useState(null);
-  const [badgeLoaded, setBadgeLoaded] = useState(false);
-  const [badgeLoading, setBadgeLoading] = useState(false);
+const LeagueCard: React.FC<LeagueCardProps> = ({ league }) => {
+  const [badgeUrl, setBadgeUrl] = useState<string | null>(null);
+  const [badgeLoaded, setBadgeLoaded] = useState<boolean>(false);
+  const [badgeLoading, setBadgeLoading] = useState<boolean>(false);
 
-  const handleCardClick = useCallback(async () => {
+  const handleCardClick = useCallback(async (): Promise<void> => {
     if (badgeLoading) return;
 
     if (badgeUrl || badgeLoaded) {
@@ -55,8 +55,8 @@ const LeagueCard = ({ league }) => {
           src={badgeUrl}
           className="badge-image"
           alt={`${league.strLeague} badge`}
-          onError={e => {
-            e.target.style.display = 'none';
+          onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
+            (e.target as HTMLImageElement).style.display = 'none';
           }}
         />
       )}
